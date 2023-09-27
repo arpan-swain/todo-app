@@ -1,6 +1,10 @@
 import functions
 import PySimpleGUI as sg
+import time
 
+sg.theme("Black")
+
+timeshow = sg.Text("", key = "clock", font=("Helvetica,8"))
 label = sg.Text("Type in a to-do")
 input_box = sg.InputText(tooltip="Enter todo", key="todo")
 add_button = sg.Button("Add")
@@ -11,14 +15,16 @@ complete_button = sg.Button("complete")
 exit_button = sg.Button("Exit")
 
 window = sg.Window("My To-Do app",
-                   layout=[[label],
+                   layout=[[timeshow],
+                           [label],
                            [input_box, add_button],
                            [list_box, edit_button,complete_button],
                            [exit_button]],
                    font=("Helvetica", 20))
 
 while True:
-    event, value = window.read()
+    event, value = window.read(timeout=200)
+    window["clock"].update(value=time.strftime("%b %d, %Y %H:%M:%S"))
     print(event)
     print(value)
     match event:
@@ -43,14 +49,17 @@ while True:
             except IndexError :
                 sg.popup("Select an item then click edit")
         case "complete":
-            todos=functions.get_todos()
-            todos.remove(value["todos-list"][0])
-            functions.write_todos(todos)
-            window["todos-list"].update(values=functions.get_todos())
-            window["todo"].update(value="")
-        case "Exit" :
+            try:
+                todos=functions.get_todos()
+                todos.remove(value["todos-list"][0])
+                functions.write_todos(todos)
+                window["todos-list"].update(values=functions.get_todos())
+                window["todo"].update(value="")
+            except IndexError :
+                sg.popup("Select an item then click edit",font=("Helvetica, 10"))
+        case "Exit":
             break
-        case "todos-list" :
+        case "todos-list":
             window["todo"].update(value=value["todos-list"][0])
 
         case sg.WIN_CLOSED:
