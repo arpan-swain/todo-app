@@ -4,7 +4,7 @@ import time
 import os
 
 if not os.path.exists("todos.txt"):
-    with open("todos.txt","r") as file:
+    with open("todos.txt","w") as file:
         pass
 sg.theme("Black")
 
@@ -29,8 +29,8 @@ window = sg.Window("My To-Do app",
 while True:
     event, value = window.read(timeout=200)
     window["clock"].update(value=time.strftime("%b %d, %Y %H:%M:%S"))
-    print(event)
-    print(value)
+    # print(event)
+    # print(value)
     match event:
         case "Add":
             todos = functions.get_todos()
