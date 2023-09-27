@@ -5,3 +5,7 @@ just an empty
 new
 lets see
 how it works
+next item
+next item2
+clean the bag
+exit
