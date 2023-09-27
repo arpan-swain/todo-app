@@ -1,7 +1,11 @@
 import functions
 import PySimpleGUI as sg
 import time
+import os
 
+if not os.path.exists("todos.txt"):
+    with open("todos.txt","r") as file:
+        pass
 sg.theme("Black")
 
 timeshow = sg.Text("", key = "clock", font=("Helvetica,8"))
