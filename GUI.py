@@ -7,11 +7,14 @@ add_button = sg.Button("Add")
 list_box = sg.Listbox(values= functions.get_todos(),key= "todos-list",
                       enable_events=True, size=[45, 10])
 edit_button = sg.Button("Edit")
+complete_button = sg.Button("complete")
+exit_button = sg.Button("Exit")
 
 window = sg.Window("My To-Do app",
                    layout=[[label],
                            [input_box, add_button],
-                           [list_box, edit_button]],
+                           [list_box, edit_button,complete_button],
+                           [exit_button]],
                    font=("Helvetica", 20))
 
 while True:
@@ -27,16 +30,26 @@ while True:
             window["todos-list"].update(values=todos)
 
         case "Edit":
-            todo_to_edit = value["todos-list"][0]
-            new_todo = value["todo"] + '\n'
+            try:
+                todo_to_edit = value["todos-list"][0]
+                new_todo = value["todo"] + '\n'
 
-            todos = functions.get_todos()
-            index = todos.index(todo_to_edit)
-            todos[index] = new_todo
+                todos = functions.get_todos()
+                index = todos.index(todo_to_edit)
+                todos[index] = new_todo
+                functions.write_todos(todos)
+
+                window["todos-list"].update(values=todos)
+            except IndexError :
+                sg.popup("Select an item then click edit")
+        case "complete":
+            todos=functions.get_todos()
+            todos.remove(value["todos-list"][0])
             functions.write_todos(todos)
-
-            window["todos-list"].update(values=todos)
-
+            window["todos-list"].update(values=functions.get_todos())
+            window["todo"].update(value="")
+        case "Exit" :
+            break
         case "todos-list" :
             window["todo"].update(value=value["todos-list"][0])
 
